@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de URLs</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Comparador de URLs y Texto</h1>
+
+        <label for="list1" class="label">Ingrese el primer listado de URLs, XML o texto:</label>
+        <textarea id="list1" class="textarea" placeholder="https://ejemplo1.com&#10;https://ejemplo2.com&#10;O&#10;<url>https://ejemplo3.com</url>"></textarea>
+
+        <label for="list2" class="label">Ingrese el segundo listado de URLs, XML o texto:</label>
+        <textarea id="list2" class="textarea" placeholder="https://ejemplo2.com&#10;https://ejemplo4.com&#10;O&#10;<url>https://ejemplo3.com</url>"></textarea>
+
+        <button id="compareButton" class="button" onclick="compareUrls()">Comparar</button>
+
+        <button class="accordion">URLs o textos iguales en ambos listados</button>
+        <div class="panel">
+            <ul id="matchingUrls" class="list"></ul>
+        </div>
+
+        <button class="accordion">URLs o textos del primer listado que no están en el segundo</button>
+        <div class="panel">
+            <ul id="uniqueUrlsInFirstList" class="list"></ul>
+        </div>
+
+        <button class="accordion">URLs o textos únicos del segundo listado</button>
+        <div class="panel">
+            <ul id="uniqueUrlsInSecondList" class="list"></ul>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
