@@ -19,19 +19,25 @@
 
         <button id="compareButton" class="button" onclick="compareUrls()">Comparar</button>
 
-        <button class="accordion">URLs o textos iguales en ambos listados</button>
-        <div class="panel">
+        <!-- Acordeones para mostrar resultados -->
+        <button class="accordion" style="display: none;">URLs o textos iguales en ambos listados</button>
+        <div class="panel" style="display: none;">
             <ul id="matchingUrls" class="list"></ul>
         </div>
 
-        <button class="accordion">URLs o textos del primer listado que no están en el segundo</button>
-        <div class="panel">
+        <button class="accordion" style="display: none;">URLs o textos del primer listado que no están en el segundo</button>
+        <div class="panel" style="display: none;">
             <ul id="uniqueUrlsInFirstList" class="list"></ul>
         </div>
 
-        <button class="accordion">URLs o textos únicos del segundo listado</button>
-        <div class="panel">
+        <button class="accordion" style="display: none;">URLs o textos únicos del segundo listado</button>
+        <div class="panel" style="display: none;">
             <ul id="uniqueUrlsInSecondList" class="list"></ul>
+        </div>
+
+        <button class="accordion" style="display: none;">Coincidencias parciales (97% - 99% de similitud)</button>
+        <div class="panel" style="display: none;">
+            <ul id="partialMatches" class="list"></ul>
         </div>
     </div>
 
