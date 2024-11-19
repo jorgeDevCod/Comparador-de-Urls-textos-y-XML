@@ -56,6 +56,22 @@ function extractItems(text) {
     return items;
 }
 
+// Nueva función para copiar resultados
+function copyResults(event) {
+    const targetId = event.target.getAttribute('data-target');
+    const resultsList = document.getElementById(targetId);
+    const items = Array.from(resultsList.children)
+        .filter(li => !li.classList.contains('results-summary'))
+        .map(li => li.textContent);
+
+    navigator.clipboard.writeText(items.join('\n')).then(() => {
+        event.target.textContent = '✓';
+        setTimeout(() => {
+            event.target.textContent = '📋';
+        }, 2000);
+    });
+}
+
 // Función para mostrar resultados
 function showResults(elementId, items, showTotal = true) {
     const listElement = document.getElementById(elementId);
@@ -67,6 +83,14 @@ function showResults(elementId, items, showTotal = true) {
         totalItem.classList.add('results-summary');
         listElement.appendChild(totalItem);
     }
+
+    // Añadir botón de copiar para cada panel
+    const copyButton = document.createElement("button");
+    copyButton.textContent = "📋";
+    copyButton.classList.add('copy-btn');
+    copyButton.setAttribute('data-target', elementId);
+    copyButton.addEventListener('click', copyResults);
+    listElement.parentElement.insertBefore(copyButton, listElement);
 
     items.forEach(item => {
         const li = document.createElement("li");
@@ -97,6 +121,9 @@ function compareUrls() {
         });
     });
 
+    // Eliminar botones de copia existentes antes de agregar nuevos
+    document.querySelectorAll('.copy-btn').forEach(btn => btn.remove());
+
     showResults("matchingUrls", matchingItems);
     showResults("uniqueUrlsInFirstList", uniqueItemsInFirstList);
     showResults("uniqueUrlsInSecondList", uniqueItemsInSecondList);
@@ -123,5 +150,3 @@ document.querySelectorAll('.accordion').forEach(accordion => {
 
 // Evento de comparación
 document.getElementById('compareButton').addEventListener('click', compareUrls);
-
-

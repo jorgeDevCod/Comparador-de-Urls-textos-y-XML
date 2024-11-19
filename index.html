@@ -13,35 +13,27 @@
             <span class="title-icon">🔗</span>
             Comparador de URLs y Textos
         </h1>
-
+        
         <div class="input-group">
             <label for="list1">Primer listado de URLs, XML o texto:</label>
             <textarea 
-                id="list1" 
-                placeholder="Ingrese URLs, XML o texto...
-Ejemplo:
-https://ejemplo1.com
-https://ejemplo2.com
-<url>https://ejemplo3.com</url>"
+                id="list1"
+                placeholder="Ingrese URLs, XML o texto... Ejemplo: https://ejemplo1.com https://ejemplo2.com <url>https://ejemplo3.com</url>"
             ></textarea>
         </div>
-
+        
         <div class="input-group">
             <label for="list2">Segundo listado de URLs, XML o texto:</label>
             <textarea 
-                id="list2" 
-                placeholder="Ingrese URLs, XML o texto...
-Ejemplo:
-https://ejemplo2.com
-https://ejemplo4.com
-<url>https://ejemplo3.com</url>"
+                id="list2"
+                placeholder="Ingrese URLs, XML o texto... Ejemplo: https://ejemplo2.com https://ejemplo4.com <url>https://ejemplo3.com</url>"
             ></textarea>
         </div>
-
+        
         <button id="compareButton" class="compare-button">
             Comparar URLs o Textos
         </button>
-
+        
         <div id="results">
             <div class="accordion" id="matchingUrlsAccordion">
                 <span>URLs o textos iguales en ambos listados</span>
@@ -50,7 +42,7 @@ https://ejemplo4.com
             <div class="panel" id="matchingUrlsPanel">
                 <ul id="matchingUrls" class="results-list"></ul>
             </div>
-
+            
             <div class="accordion" id="uniqueUrlsFirstListAccordion">
                 <span>URLs o textos unicos del primer listado</span>
                 <span class="accordion-icon">▼</span>
@@ -58,7 +50,7 @@ https://ejemplo4.com
             <div class="panel" id="uniqueUrlsFirstListPanel">
                 <ul id="uniqueUrlsInFirstList" class="results-list"></ul>
             </div>
-
+            
             <div class="accordion" id="uniqueUrlsSecondListAccordion">
                 <span>URLs o textos únicos del segundo listado</span>
                 <span class="accordion-icon">▼</span>
@@ -66,7 +58,7 @@ https://ejemplo4.com
             <div class="panel" id="uniqueUrlsSecondListPanel">
                 <ul id="uniqueUrlsInSecondList" class="results-list"></ul>
             </div>
-
+            
             <div class="accordion" id="partialMatchesAccordion">
                 <span>Coincidencias parciales (97% - 99%)</span>
                 <span class="accordion-icon">▼</span>
@@ -76,7 +68,7 @@ https://ejemplo4.com
             </div>
         </div>
     </div>
-
+    
     <script src="app.js"></script>
 </body>
 </html>
