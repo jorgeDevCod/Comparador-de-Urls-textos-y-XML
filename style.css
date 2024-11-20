@@ -261,6 +261,9 @@ textarea:focus {
     gap: 15px;
     margin-bottom: 32px;
 }
+.features-grid.use{
+    grid-template-columns: repeat(1, 1fr);
+}
 
 .feature {
     background-color: #f8f9fa;
@@ -269,6 +272,10 @@ textarea:focus {
     text-align: center;
     border: 1px solid #c0c6d9;
     transition: transform 0.3s ease;
+}
+.features-grid.use .description-use{
+    text-align: left;
+    font-size: 0.8em;
 }
 
 .feature:hover {
@@ -470,6 +477,8 @@ textarea:focus {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); -webkit-transform: rotate(360deg); -moz-transform: rotate(360deg); -ms-transform: rotate(360deg); -o-transform: rotate(360deg); }
 }
+
+
 
 /* Optimizaciones para rendimiento */
 .results-list {
