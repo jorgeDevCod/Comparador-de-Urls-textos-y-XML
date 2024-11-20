@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,47 +9,66 @@
     <link rel="icon" href="/favicon-conparer.ico" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
+
 <body>
     <div class="container">
         <h1 class="title">
             <span class="title-icon">🔗</span>
-            Comparador de: URL's | XML | Textos 
+            Comparador Avanzado: URLs | XML | Textos
         </h1>
-        
+
+        <div class="tool-description-card">
+            <h2>Descripción Completa de la Herramienta</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <h3>🔍 Comparación Avanzada</h3>
+                    <p>Compara múltiples tipos de listas con algoritmos de similitud precisos.</p>
+                </div>
+                <div class="feature">
+                    <h3>📊 Resultados Detallados</h3>
+                    <p>Genera resultados clasificados: iguales, únicos y parcialmente similares.</p>
+                </div>
+                <div class="feature">
+                    <h3>📋 Combinar y Exportar</h3>
+                    <p>Combina resultados y exporta a Excel con un solo clic.</p>
+                </div>
+            </div>
+            <div class="comparison-types">
+                <h3>Tipos de Comparación:</h3>
+                <select id="comparisonType">
+                    <option value="url-url">Listados de URLs con URLs</option>
+                    <option value="url-xml">Listado de URLs con XML</option>
+                    <option value="text-text">Comparar Textos</option>
+                </select>
+            </div>
+        </div>
+
         <div class="input-group">
-            <label for="list1">Primer listado de URLs, XML o texto:</label>
+            <label for="list1">Ingrese el primer listado:</label>
             <div class="textarea-container">
                 <textarea 
                     id="list1"
-                    placeholder="Ingrese URLs, XML o texto 1 por fila: Ejemplo: 
-                    https://ejemplo1.com 
-                    https://ejemplo2.com o
-                    <url>https://ejemplo.com</url>
-                    <url>https://ejemplo.com</url>"
+                    placeholder="Ingrese el primer listado según el tipo de comparación"
                 ></textarea>
-                <div class="counter" id="list1Count">Contador de urls o filas de texto: 0</div>
+                <div class="counter" id="list1Count">Contador de elementos: 0</div>
             </div>
         </div>
         
         <div class="input-group">
-            <label for="list2">Segundo listado de URLs, XML o texto:</label>
+            <label for="list2">Ingrese el segundo listado:</label>
             <div class="textarea-container">
                 <textarea 
                     id="list2"
-                    placeholder="Ingrese URLs, XML o texto 1 por fila: Ejemplo: 
-                    https://ejemplo1.com 
-                    https://ejemplo2.com o
-                    <url>https://ejemplo.com</url>
-                    <url>https://ejemplo.com</url>"
+                    placeholder="Ingrese el segundo listado según el tipo de comparación"
                 ></textarea>
-                <div class="counter" id="list2Count">Contador de urls o filas de texto: 0</div>
+                <div class="counter" id="list2Count">Contador de elementos: 0</div>
             </div>
         </div>
         
         <button id="compareButton" class="compare-button">
-            Comparar URLs o Textos
+            Comparar Listados
         </button>
-        
+
         <div id="results">
             <div class="accordion" id="matchingUrlsAccordion">
                 <span>URLs o textos iguales en ambos listados</span>
@@ -62,7 +82,7 @@
             <div class="panel" id="matchingUrlsPanel">
                 <ul id="matchingUrls" class="results-list"></ul>
             </div>
-            
+
             <div class="accordion" id="uniqueUrlsFirstListAccordion">
                 <span>URLs o textos unicos del primer listado</span>
                 <div class="accordion-controls">
@@ -75,7 +95,7 @@
             <div class="panel" id="uniqueUrlsFirstListPanel">
                 <ul id="uniqueUrlsInFirstList" class="results-list"></ul>
             </div>
-            
+
             <div class="accordion" id="uniqueUrlsSecondListAccordion">
                 <span>URLs o textos únicos del segundo listado</span>
                 <div class="accordion-controls">
@@ -88,7 +108,7 @@
             <div class="panel" id="uniqueUrlsSecondListPanel">
                 <ul id="uniqueUrlsInSecondList" class="results-list"></ul>
             </div>
-            
+
             <div class="accordion" id="partialMatchesAccordion">
                 <span>Coincidencias parciales (97% - 99%)</span>
                 <div class="accordion-controls">
@@ -105,7 +125,7 @@
             <button id="combineButton" class="combine-button">
                 Combinar Resultados Seleccionados
             </button>
-            
+
             <div class="accordion" id="combinedResultsAccordion">
                 <span>Resultados Combinados</span>
                 <div class="accordion-controls">
@@ -118,7 +138,8 @@
             </div>
         </div>
     </div>
-    
+
     <script src="app.js"></script>
 </body>
+
 </html>

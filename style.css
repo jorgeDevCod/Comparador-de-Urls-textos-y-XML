@@ -63,6 +63,50 @@ body {
     font-weight: 600;
     color: var(--text-color);
 }
+.tool-description-card {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.tool-description-card h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.tool-description-card ul {
+    list-style-type: disc;
+    padding-left: 30px;
+    margin-bottom: 15px;
+}
+
+.example-usage {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.example-usage h3 {
+    color: var(--text-color);
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.example-usage pre {
+    background-color: #f4f4f4;
+    border-radius: 6px;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    overflow-x: auto;
+    margin-bottom: 10px;
+}
 
 .textarea-container {
     position: relative;
@@ -89,7 +133,7 @@ textarea:focus {
 .counter {
     position: absolute;
     top: -16px;
-    right: 6px;
+    right: 4px;
     background-color: rgba(255, 255, 255, 0.9);
     padding: 2px 8px;
     border-radius: 4px;
@@ -208,12 +252,83 @@ textarea:focus {
     opacity: 1;
 }
 
+/* [Previous CSS remains the same, add these new styles] */
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.feature {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    transition: transform 0.3s ease;
+}
+
+.feature:hover {
+    transform: scale(1.05);
+}
+
+.feature h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.comparison-types {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#comparisonType {
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid var(--primary-color);
+    font-size: 1em;
+    width: 300px;
+}
+
+@media (max-width: 832px) {
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    .feature{
+        font-size: 12px
+    }
+    #comparisonType {
+        margin-top: 4px;
+        max-width: 240px;
+        margin: auto;
+        font-size: 14px;
+    }
+}
+
 @media (max-width: 600px) {
     .container {
         padding: 20px;
         margin: 0 10px;
     }
+    .counter {
+        position: relative;
+        font-size: 0.9em;
+        right: 8px;
+        bottom: 0;
+    }
+    .title{
+        flex-direction: column
+    }
+    .features-grid {
+        grid-template-columns: repeat(1, 1fr);
+        gap: 15px;
+    }
 }
+
+
 
 .accordion-controls {
     display: flex;
@@ -261,6 +376,10 @@ textarea:focus {
     opacity: 0.6;
     transition: opacity var(--transition-speed);
     padding: 0 5px;
+    -webkit-transition: opacity var(--transition-speed);
+    -moz-transition: opacity var(--transition-speed);
+    -ms-transition: opacity var(--transition-speed);
+    -o-transition: opacity var(--transition-speed);
 }
 
 .export-excel-btn:hover {
