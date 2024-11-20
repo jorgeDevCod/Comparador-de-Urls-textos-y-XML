@@ -2,7 +2,7 @@
     --primary-color: #007bff;
     --secondary-color: #0056b3;
     --background-color: #f4f4f4;
-    --text-color: #333;
+    --text-color: #3a3838;
     --border-radius: 12px;
     --transition-speed: 0.3s;
 }
@@ -320,7 +320,7 @@ textarea:focus {
         bottom: 0;
     }
     .title{
-        flex-direction: column
+        flex-direction: column-reverse
     }
     .features-grid {
         grid-template-columns: repeat(1, 1fr);
