@@ -1,8 +1,10 @@
-// Función para procesar grandes conjuntos de datos en chunks
-function* chunks(array, size) {
+// Función auxiliar para dividir arrays en chunks
+function chunks(array, size) {
+    const result = [];
     for (let i = 0; i < array.length; i += size) {
-        yield array.slice(i, i + size);
+        result.push(array.slice(i, i + size));
     }
+    return result;
 }
 
 // Función para calcular la distancia de Levenshtein optimizada
@@ -97,10 +99,13 @@ function copyResults(event) {
     });
 }
 
-// Función para mostrar resultados
+// Función para mostrar resultados con scroll consistente
 function showResults(elementId, items, showTotal = true) {
     const listElement = document.getElementById(elementId);
     listElement.innerHTML = '';
+
+    // Asegurar que el contenedor tenga la clase para el scroll
+    listElement.classList.add('results-list');
 
     if (showTotal) {
         const totalItem = document.createElement("li");
@@ -110,21 +115,29 @@ function showResults(elementId, items, showTotal = true) {
     }
 
     // Añadir botón de copiar
-    if (!listElement.parentElement.querySelector('.copy-btn')) {
+    const parentPanel = listElement.closest('.panel');
+    if (!parentPanel.querySelector('.copy-btn')) {
         const copyButton = document.createElement("button");
         copyButton.textContent = "📋";
         copyButton.classList.add('copy-btn');
         copyButton.setAttribute('data-target', elementId);
         copyButton.addEventListener('click', copyResults);
-        listElement.parentElement.insertBefore(copyButton, listElement);
+        parentPanel.insertBefore(copyButton, listElement);
     }
-
 
     items.forEach(item => {
         const li = document.createElement("li");
         li.textContent = item;
         listElement.appendChild(li);
     });
+
+    // Asegurar que el panel tenga altura máxima consistente
+    const panel = listElement.closest('.panel');
+    if (panel) {
+        if (panel.classList.contains('active')) {
+            panel.style.maxHeight = '400px'; // Altura fija para todos los paneles
+        }
+    }
 }
 
 // Función para mostrar/ocultar el loading spinner
@@ -222,13 +235,13 @@ function combineSelectedResults() {
     });
 
     const combinedArray = Array.from(combinedItems);
-    
     showResults("combinedResults", combinedArray);
     
     const combinedAccordion = document.getElementById('combinedResultsAccordion');
     const combinedPanel = document.getElementById('combinedResultsPanel');
     if (combinedAccordion && combinedPanel) {
         combinedAccordion.classList.add('active');
+        combinedPanel.style.maxHeight = '400px';
         combinedPanel.classList.add('active');
     }
 }
@@ -237,90 +250,174 @@ function combineSelectedResults() {
 function exportToExcel() {
     const combinedList = document.getElementById('combinedResults');
     if (!combinedList || !combinedList.children.length) {
-        alert('No hay resultados para exportar');
+        alert('No hay datos para exportar.');
         return;
     }
 
-    const items = Array.from(combinedList.children)
-        .filter(li => !li.classList.contains('results-summary'))
-        .map(li => [li.textContent]);
+    // Filtrar elementos relevantes
+    const rows = Array.from(combinedList.children)
+        .filter(li => !li.classList.contains('results-summary')) // Ignorar resúmenes
+        .map(li => [li.textContent.trim()]) // Convertir a formato para Excel
+        .filter(row => row[0]); // Ignorar filas vacías
 
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet([['URLs/Textos'], ...items]);
-    XLSX.utils.book_append_sheet(wb, ws, "Resultados Combinados");
-    XLSX.writeFile(wb, "resultados_combinados.xlsx");
-}
-
-// Función principal de comparación asíncrona
-async function compareUrls() {
-    try {
-        toggleLoading(true);
-        
-        // Limpiar resultados previos
-        document.getElementById('combinedResults').innerHTML = '';
-        document.querySelectorAll('.combine-checkbox input').forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        
-        const list1 = document.getElementById("list1").value;
-        const list2 = document.getElementById("list2").value;
-        
-        // Extraer y procesar items en segundo plano
-        const items1 = await new Promise(resolve => {
-            setTimeout(() => resolve(extractItems(list1)), 0);
-        });
-        const items2 = await new Promise(resolve => {
-            setTimeout(() => resolve(extractItems(list2)), 0);
-        });
-        
-        // Procesar comparaciones en chunks
-        const results = await processComparisons(items1, items2);
-        
-        // Mostrar resultados
-        document.querySelectorAll('.copy-btn').forEach(btn => btn.remove());
-        
-        showResults("matchingUrls", results.matching);
-        showResults("uniqueUrlsInFirstList", results.uniqueInFirst);
-        showResults("uniqueUrlsInSecondList", results.uniqueInSecond);
-        showResults("partialMatches", results.partial);
-        
-        // Actualizar visibilidad de paneles
-        document.querySelectorAll('.panel').forEach(panel => {
-            if (panel.querySelector('.results-list').children.length > 0) {
-                panel.classList.add('has-content');
-            } else {
-                panel.classList.remove('has-content');
-            }
-        });
-    } catch (error) {
-        console.error('Error en la comparación:', error);
-        alert('Ocurrió un error durante la comparación. Por favor, revisa la consola para más detalles.');
-    } finally {
-        toggleLoading(false);
+    if (rows.length === 0) {
+        alert('No hay datos válidos para exportar.');
+        return;
     }
+
+    // Crear archivo Excel
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([['URL'], ...rows]); // Agregar encabezado "URL"
+    XLSX.utils.book_append_sheet(wb, ws, 'Resultados Combinados');
+    XLSX.writeFile(wb, 'resultados_combinados.xlsx');
 }
 
-// Inicializar acordeones y event listeners cuando el DOM esté listo
+// Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar acordeones
-    document.querySelectorAll('.accordion').forEach(accordion => {
-        accordion.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const panel = this.nextElementSibling;
-            panel.classList.toggle('active');
+    // Contador en vivo para los textareas
+    const textareas = [document.getElementById('list1'), document.getElementById('list2')];
+    
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            const items = extractItems(this.value);
+            const counterId = this.id + 'Count';
+            const counterElement = document.getElementById(counterId);
+            if (counterElement) {
+                counterElement.textContent = `Total de URLs o Textos: ${items.length}`;
+            }
         });
     });
 
-    // Event listeners principales
-    document.getElementById('compareButton').addEventListener('click', compareUrls);
-    document.getElementById('combineButton').addEventListener('click', combineSelectedResults);
-    
-    // Event listener para exportar a Excel
-    const exportButton = document.querySelector('.export-excel-btn');
-    if (exportButton) {
-        exportButton.addEventListener('click', function(e) {
-            e.stopPropagation();
-            exportToExcel();
+    // Manejo de acordeones con altura consistente
+    document.querySelectorAll('.accordion').forEach(accordion => {
+        accordion.addEventListener('click', function() {
+            const panel = this.nextElementSibling;
+            const icon = this.querySelector('.accordion-icon');
+            
+            this.classList.toggle('active');
+            panel.classList.toggle('active');
+            
+            if (panel.classList.contains('active')) {
+                // Establecer altura fija para los paneles de resultados
+                if (panel.querySelector('.results-list')) {
+                    panel.style.maxHeight = '400px';
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            } else {
+                panel.style.maxHeight = "0";
+            }
         });
-    }
+    });
+
+    // Botón de comparar
+    document.getElementById('compareButton').addEventListener('click', async function() {
+        const list1 = extractItems(document.getElementById('list1').value);
+        const list2 = extractItems(document.getElementById('list2').value);
+        
+        if (!list1.length || !list2.length) {
+            alert('Por favor, ingrese URLs o texto en ambos campos.');
+            return;
+        }
+        
+        toggleLoading(true);
+        const results = await processComparisons(list1, list2);
+        
+        showResults('matchingUrls', results.matching);
+        showResults('uniqueUrlsInFirstList', results.uniqueInFirst);
+        showResults('uniqueUrlsInSecondList', results.uniqueInSecond);
+        showResults('partialMatches', results.partial);
+        
+        toggleLoading(false);
+
+        // Activar y mostrar los paneles de resultados
+        document.querySelectorAll('.panel').forEach(panel => {
+            if (panel.querySelector('.results-list')) {
+                panel.classList.add('active');
+                panel.style.maxHeight = '400px';
+                panel.previousElementSibling.classList.add('active');
+            }
+        });
+    });
+
+    // Botón de combinar
+    document.getElementById('combineButton').addEventListener('click', combineSelectedResults);
+
+    // Botón de exportar a Excel
+    document.querySelector('.export-excel-btn').addEventListener('click', exportToExcel);
 });
+
+// Estilos CSS necesarios (añadir al archivo CSS o en una etiqueta style)
+const styles = `
+/* Estilos para los contenedores de resultados */
+.results-list {
+    max-height: 350px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Estilo para el scroll */
+.results-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.results-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.results-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.results-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Estilos para los elementos de la lista */
+.results-list li {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.results-list li:last-child {
+    border-bottom: none;
+}
+
+/* Estilo para el resumen de resultados */
+.results-summary {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Ajustes para el panel */
+.panel {
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
+}
+
+.panel.active {
+    overflow-y: auto;
+}
+
+/* Ajuste para el botón de copiar */
+.copy-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 2;
+}
+`;
+
+// Añadir estilos al documento
+const styleSheet = document.createElement("style");
+styleSheet.textContent = styles;
+document.head.appendChild(styleSheet);
