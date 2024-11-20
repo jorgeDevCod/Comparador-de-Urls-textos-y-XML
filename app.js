@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const list2 = extractItems(document.getElementById('list2').value, comparisonType);
         
         if (!list1.length || !list2.length) {
-            alert('Por favor, ingrese elementos en ambos listados.');
+            alert('Por favor, ingrese listados correctos en ambos campos según la opción de comparación seleccionada.');
             return;
         }
         
