@@ -74,8 +74,8 @@ body {
 
 .tool-description-card h2 {
     color: var(--primary-color);
-    margin-bottom: 15px;
-    font-size: 1.5em;
+    margin: 16px 0 32px 0;
+    font-size: 1.6em;
     text-align: center;
 }
 
@@ -258,7 +258,7 @@ textarea:focus {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 32px;
 }
 
 .feature {
@@ -281,7 +281,8 @@ textarea:focus {
 
 .comparison-types {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 32px;
+    font-size: 1.2em
 }
 
 #comparisonType {
@@ -293,12 +294,27 @@ textarea:focus {
 }
 
 @media (max-width: 832px) {
+
+    .title {
+        font-size: 1.8em;
+        margin: 0;
+    }
+
+    .tool-description-card h2 {
+        font-size: 1.2em;
+    }
+    
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
     }
     .feature{
         font-size: 12px
+    }
+    .comparison-types {
+        text-align: center;
+        margin-bottom: 32px;
+        font-size: 1em
     }
     #comparisonType {
         margin-top: 4px;
