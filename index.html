@@ -6,6 +6,7 @@
     <title>Comparador de URLs</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="/favicon-conparer.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -37,7 +38,12 @@
         <div id="results">
             <div class="accordion" id="matchingUrlsAccordion">
                 <span>URLs o textos iguales en ambos listados</span>
-                <span class="accordion-icon">▼</span>
+                <div class="accordion-controls">
+                    <label class="combine-checkbox">
+                        <input type="checkbox" data-source="matchingUrls"> Combinar
+                    </label>
+                    <span class="accordion-icon">▼</span>
+                </div>
             </div>
             <div class="panel" id="matchingUrlsPanel">
                 <ul id="matchingUrls" class="results-list"></ul>
@@ -45,7 +51,12 @@
             
             <div class="accordion" id="uniqueUrlsFirstListAccordion">
                 <span>URLs o textos unicos del primer listado</span>
-                <span class="accordion-icon">▼</span>
+                <div class="accordion-controls">
+                    <label class="combine-checkbox">
+                        <input type="checkbox" data-source="uniqueUrlsInFirstList"> Combinar
+                    </label>
+                    <span class="accordion-icon">▼</span>
+                </div>
             </div>
             <div class="panel" id="uniqueUrlsFirstListPanel">
                 <ul id="uniqueUrlsInFirstList" class="results-list"></ul>
@@ -53,7 +64,12 @@
             
             <div class="accordion" id="uniqueUrlsSecondListAccordion">
                 <span>URLs o textos únicos del segundo listado</span>
-                <span class="accordion-icon">▼</span>
+                <div class="accordion-controls">
+                    <label class="combine-checkbox">
+                        <input type="checkbox" data-source="uniqueUrlsInSecondList"> Combinar
+                    </label>
+                    <span class="accordion-icon">▼</span>
+                </div>
             </div>
             <div class="panel" id="uniqueUrlsSecondListPanel">
                 <ul id="uniqueUrlsInSecondList" class="results-list"></ul>
@@ -61,11 +77,32 @@
             
             <div class="accordion" id="partialMatchesAccordion">
                 <span>Coincidencias parciales (97% - 99%)</span>
-                <span class="accordion-icon">▼</span>
+                <div class="accordion-controls">
+                    <label class="combine-checkbox">
+                        <input type="checkbox" data-source="partialMatches"> Combinar
+                    </label>
+                    <span class="accordion-icon">▼</span>
+                </div>
             </div>
             <div class="panel" id="partialMatchesPanel">
                 <ul id="partialMatches" class="results-list"></ul>
             </div>
+
+            <button id="combineButton" class="combine-button">
+                Combinar Resultados Seleccionados
+            </button>
+            
+            <div class="accordion" id="combinedResultsAccordion">
+                <span>Resultados Combinados</span>
+                <div class="accordion-controls">
+                    <button class="export-excel-btn" title="Exportar a Excel">Exportar a Excel 📊</button>
+                    <span class="accordion-icon">▼</span>
+                </div>
+            </div>
+            <div class="panel" id="combinedResultsPanel">
+                <ul id="combinedResults" class="results-list"></ul>
+            </div>
+            
         </div>
     </div>
     

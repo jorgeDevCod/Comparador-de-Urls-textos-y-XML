@@ -131,14 +131,19 @@ textarea:focus {
 .panel {
     max-height: 0;
     overflow: hidden;
-    transition: max-height var(--transition-speed) ease-out;
     background-color: white;
     border: 1px solid #e0e0e0;
     border-radius: 0 0 8px 8px;
     position: relative;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed), visibility var(--transition-speed), max-height var(--transition-speed);
+
 }
 
 .panel.active {
+    opacity: 1;
+    visibility: visible;
     max-height: 500px;
 }
 
@@ -181,4 +186,116 @@ textarea:focus {
         padding: 20px;
         margin: 0 10px;
     }
+}
+
+.accordion-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.combine-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.combine-checkbox input {
+    cursor: pointer;
+}
+
+.combine-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 20px 0;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    font-weight: 600;
+}
+
+.combine-button:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.export-excel-btn {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity var(--transition-speed);
+    padding: 0 5px;
+}
+
+.export-excel-btn:hover {
+    opacity: 1;
+}
+/* Estilos para el spinner y overlay */
+.loading-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #333;
+}
+
+.progress-bar {
+    width: 300px;
+    height: 20px;
+    background-color: #f3f3f3;
+    border-radius: 10px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background-color: #3498db;
+    transition: width 0.3s ease;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Optimizaciones para rendimiento */
+.results-list {
+    contain: content;
+    will-change: contents;
+}
+
+.panel {
+    contain: layout;
 }
