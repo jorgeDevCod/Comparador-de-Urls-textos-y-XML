@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparador de URLs | xml | texto</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="/favicon-conparer.ico" type="image/x-icon">
+    <link rel="icon" href="favicon-conparer.ico" type="image/x-ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 
@@ -36,13 +35,7 @@
             <div class="features-grid use">
                 <div class="feature">
                     <h3>🚀 Guía Rápida de Uso</h3>
-                    <p class="description-use">Seleccionar el tipo de comparación (URL con URL, URL con XML o textos). Ingresa los listados: para URL con URL, pon una URL por fila; para URL con XML, coloca el código XML en uno de los listados y las URLs en el otro; para textos, ingrésalos libremente. Haz clic en "Comparar Listados" para obtener resultados categorizados, que podrás explorar, combinar y exportar a Excel. Cada resultado también incluye un botón de "Copiar" para copiarlo individualmente.</p>
-                    <!-- <ul>
-                        <li>Selecciona el tipo de comparación</li>
-                        <li>Ingresa los dos listados a comparar</li>
-                        <li>Haz clic en "Comparar Listados"</li>
-                        <li>Explora y combina resultados</li>
-                    </ul> -->
+                    <p class="description-use">Seleccionar el tipo de comparación (URL con URL, URL con XML o textos). Ingresa los listados: para URL con URL, pon una URL por fila; para URL con XML, coloca todo tu código XML en uno de los listados y las URLs en el otro(uno por fila); para textos, ingrésalos libremente. Haz clic en "Comparar Listados" para obtener resultados categorizados, que podrás explorar, combinar y exportar a Excel. Cada resultado también incluye un botón de "Copiar" para copiarlo individualmente.</p>
                 </div>
             </div>
             <div class="comparison-types">
@@ -50,6 +43,7 @@
                 <select id="comparisonType">
                     <option value="url-url">Listados de URLs con URLs</option>
                     <option value="url-xml">Listado de URLs con XML</option>
+                    <option value="url-xml">Listado de XML con XML</option>
                     <option value="text-text">Comparar Textos</option>
                 </select>
             </div>
@@ -122,7 +116,7 @@
             </div>
 
             <div class="accordion" id="partialMatchesAccordion">
-                <span>Coincidencias parciales (97% - 99%)</span>
+                <span>Coincidencias parciales (70% - 99%)</span>
                 <div class="accordion-controls">
                     <label class="combine-checkbox">
                         <input type="checkbox" data-source="partialMatches"> Combinar

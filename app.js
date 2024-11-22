@@ -1,4 +1,4 @@
-// Función auxiliar para dividir arrays en chunks
+// Utility function to create chunks of arrays
 function chunks(array, size) {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
@@ -7,7 +7,7 @@ function chunks(array, size) {
     return result;
 }
 
-// Función para calcular la distancia de Levenshtein optimizada
+// Levenshtein distance calculation for similarity
 function levenshtein(a, b) {
     if (a === b) return 0;
     if (Math.abs(a.length - b.length) > 10) return Math.max(a.length, b.length);
@@ -41,7 +41,7 @@ function levenshtein(a, b) {
     return row[blen];
 }
 
-// Función para calcular el porcentaje de similitud
+// Calculate similarity percentage
 function similarity(a, b) {
     const len = Math.max(a.length, b.length);
     if (len === 0) return 100;
@@ -49,51 +49,123 @@ function similarity(a, b) {
     return ((len - dist) / len) * 100;
 }
 
-// Función para extraer elementos según el tipo de comparación
-function extractItems(text, type) {
-    switch(type) {
-        case 'url-url':
-            return extractURLs(text);
-        case 'url-xml':
-            return extractXMLUrls(text);
-        case 'text-text':
-            return extractTextLines(text);
-        default:
-            return [];
-    }
-}
-
-// Función para extraer URLs de texto plano
+// Function to extract URLs from plain text
 function extractURLs(text) {
     const urlPattern = /https?:\/\/[^\s<>"']+/g;
     return [...new Set(text.match(urlPattern) || [])];
 }
 
-// Función para extraer URLs de XML
+// Function to extract URLs from XML
 function extractXMLUrls(text) {
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, "text/xml");
-    const urls = [];
-    
-    ['loc', 'url'].forEach(tag => {
-        Array.from(xml.getElementsByTagName(tag))
-            .forEach(el => {
-                const url = el.textContent.trim();
-                if (url) urls.push(url);
-            });
-    });
-    
-    return urls;
+    try {
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, "text/xml");
+        const urls = [];
+        
+        const urlTags = ['loc', 'url', 'link', 'href'];
+        urlTags.forEach(tag => {
+            Array.from(xml.getElementsByTagName(tag))
+                .forEach(el => {
+                    const url = el.textContent.trim();
+                    const urlPattern = /^https?:\/\/[^\s<>"']+$/;
+                    if (url && urlPattern.test(url)) {
+                        urls.push(url);
+                    }
+                });
+        });
+        
+        return [...new Set(urls)];
+    } catch (error) {
+        console.error('Error parsing XML:', error);
+        return [];
+    }
 }
 
-// Función para extraer líneas de texto
+// Function to extract text lines
 function extractTextLines(text) {
     return text.split(/\r?\n/)
         .map(line => line.trim())
         .filter(line => line.length > 0);
 }
 
-// Función para copiar resultados
+// Function to extract items with flexible parsing
+function extractItems(text, type) {
+    try {
+        // Trim and normalize text
+        text = text.trim();
+
+        // Helper function to check if text looks like XML
+        function isXML(str) {
+            return str.trim().startsWith('<') && str.trim().endsWith('>');
+        }
+
+        // Detect XML content
+        const isFirstXML = isXML(text);
+
+        switch(type) {
+            case 'url-url':
+            case 'url-xml':
+                // URL extraction pattern
+                const urlPattern = /https?:\/\/[^\s<>"']+/g;
+                const xmlUrlPattern = /^https?:\/\/[^\s<>"']+$/;
+
+                // If text is XML, try to extract URLs from it
+                if (isXML(text)) {
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(text, "text/xml");
+                    const urlTags = ['loc', 'url', 'link', 'href'];
+                    const extractedUrls = [];
+                    
+                    urlTags.forEach(tag => {
+                        Array.from(xml.getElementsByTagName(tag))
+                            .forEach(el => {
+                                const url = el.textContent.trim();
+                                if (url && xmlUrlPattern.test(url)) {
+                                    extractedUrls.push(url);
+                                }
+                            });
+                    });
+
+                    return [...new Set(extractedUrls)];
+                }
+
+                // If not XML, extract URLs from text
+                return [...new Set((text.match(urlPattern) || []).filter(url => xmlUrlPattern.test(url)))
+                ]
+
+            case 'xml-xml':
+                // Ensure both inputs are XML
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(text, "text/xml");
+                const urlTags = ['loc', 'url', 'link', 'href'];
+                const extractedUrls = [];
+                
+                urlTags.forEach(tag => {
+                    Array.from(xml.getElementsByTagName(tag))
+                        .forEach(el => {
+                            const url = el.textContent.trim();
+                            const urlPattern = /^https?:\/\/[^\s<>"']+$/;
+                            if (url && urlPattern.test(url)) {
+                                extractedUrls.push(url);
+                            }
+                        });
+                });
+                
+                return [...new Set(extractedUrls)];
+
+            case 'text-text':
+                return extractTextLines(text);
+
+            default:
+                return [];
+        }
+    } catch (error) {
+        console.error('Error extracting items:', error);
+        return [];
+    }
+}
+
+// Function to copy results
 function copyResults(event) {
     const targetId = event.target.getAttribute('data-target');
     const resultsList = document.getElementById(targetId);
@@ -109,7 +181,7 @@ function copyResults(event) {
     });
 }
 
-// Función para mostrar resultados con scroll consistente
+// Function to show results with consistent scroll
 function showResults(elementId, items, showTotal = true) {
     const listElement = document.getElementById(elementId);
     listElement.innerHTML = '';
@@ -147,7 +219,7 @@ function showResults(elementId, items, showTotal = true) {
     }
 }
 
-// Función para mostrar/ocultar el loading spinner
+// Function to show/hide loading spinner
 function toggleLoading(show) {
     const loadingEl = document.getElementById('loadingSpinner');
     if (show) {
@@ -171,7 +243,7 @@ function toggleLoading(show) {
     }
 }
 
-// Función para actualizar la barra de progreso
+// Function to update progress bar
 function updateProgress(percent) {
     const progressFill = document.querySelector('.progress-fill');
     if (progressFill) {
@@ -179,7 +251,7 @@ function updateProgress(percent) {
     }
 }
 
-// Función para procesar comparaciones en chunks
+// Function to process comparisons in chunks
 async function processComparisons(items1, items2, comparisonType) {
     const CHUNK_SIZE = 1000;
     const results = {
@@ -202,16 +274,14 @@ async function processComparisons(items1, items2, comparisonType) {
                     } else {
                         results.uniqueInFirst.push(item1);
                         
-                        // Ajustar criterios de similitud según el tipo de comparación
-                        const similarityThreshold = comparisonType === 'text-text' ? 95 : 97;
+                        // Adjust similarity threshold based on comparison type
+                        const similarityThreshold = comparisonType === 'text-text' ? 70 : 99;
                         
-                        items2.some(item2 => {
+                        items2.forEach(item2 => {
                             const similarityPercent = similarity(item1, item2);
-                            if (similarityPercent >= similarityThreshold && similarityPercent < 100) {
+                            if (similarityPercent >= 70 && similarityPercent < 99) {
                                 results.partial.push(`${item1} - ${item2} (${similarityPercent.toFixed(2)}%)`);
-                                return true;
                             }
-                            return false;
                         });
                     }
                 });
@@ -229,8 +299,9 @@ async function processComparisons(items1, items2, comparisonType) {
     return results;
 }
 
-// Función para combinar resultados seleccionados
+// Function to combine selected results
 function combineSelectedResults() {
+    const urlPattern = /^https?:\/\/[^\s<>"']+$/;
     const combinedItems = new Set();
     const checkboxes = document.querySelectorAll('.combine-checkbox input:checked');
     
@@ -239,7 +310,8 @@ function combineSelectedResults() {
         const sourceList = document.getElementById(sourceId);
         const items = Array.from(sourceList.children)
             .filter(li => !li.classList.contains('results-summary'))
-            .map(li => li.textContent);
+            .map(li => li.textContent.trim())
+            .filter(url => urlPattern.test(url));
         
         items.forEach(item => combinedItems.add(item));
     });
@@ -256,7 +328,7 @@ function combineSelectedResults() {
     }
 }
 
-// Función para exportar a Excel
+// Function to export to Excel
 function exportToExcel() {
     const combinedList = document.getElementById('combinedResults');
     if (!combinedList || !combinedList.children.length) {
@@ -264,25 +336,27 @@ function exportToExcel() {
         return;
     }
 
+    const urlPattern = /^https?:\/\/[^\s<>"']+$/;
     const rows = Array.from(combinedList.children)
         .filter(li => !li.classList.contains('results-summary'))
-        .map(li => [li.textContent.trim()])
-        .filter(row => row[0]);
+        .map(li => li.textContent.trim())
+        .filter(url => urlPattern.test(url))
+        .map(url => [url]);
 
     if (rows.length === 0) {
-        alert('No hay datos válidos para exportar.');
+        alert('No hay URLs válidas para exportar.');
         return;
     }
 
     const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet([['Resultado'], ...rows]);
-    XLSX.utils.book_append_sheet(wb, ws, 'Resultados Combinados');
-    XLSX.writeFile(wb, 'resultados_combinados.xlsx');
+    const ws = XLSX.utils.aoa_to_sheet([['URL'], ...rows]);
+    XLSX.utils.book_append_sheet(wb, ws, 'URLs Combinadas');
+    XLSX.writeFile(wb, 'urls_combinadas.xlsx');
 }
 
-// Event Listeners
+// Event Listeners initialization
 document.addEventListener('DOMContentLoaded', function() {
-    // Contador en vivo para los textareas
+    // Live counter for textareas
     const textareas = [document.getElementById('list1'), document.getElementById('list2')];
     const comparisonTypeSelect = document.getElementById('comparisonType');
     
@@ -298,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Manejo de acordeones con altura consistente
+    // Accordion handling with consistent height
     document.querySelectorAll('.accordion').forEach(accordion => {
         accordion.addEventListener('click', function() {
             const panel = this.nextElementSibling;
@@ -319,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Botón de comparar
+    // Compare button event listener
     document.getElementById('compareButton').addEventListener('click', async function() {
         const comparisonType = document.getElementById('comparisonType').value;
         const list1 = extractItems(document.getElementById('list1').value, comparisonType);
@@ -340,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         toggleLoading(false);
 
-        // Activar y mostrar los paneles de resultados
+        // Activate and display result panels
         document.querySelectorAll('.panel').forEach(panel => {
             if (panel.querySelector('.results-list')) {
                 panel.classList.add('active');
@@ -350,9 +424,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Botón de combinar
+    // Combine button event listener
     document.getElementById('combineButton').addEventListener('click', combineSelectedResults);
 
-    // Botón de exportar a Excel
+    // Export to Excel button event listener
     document.querySelector('.export-excel-btn').addEventListener('click', exportToExcel);
 });

@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #007bff;
-    --secondary-color: #0056b3;
+    --primary-color: #419bfad3;
+    --secondary-color: #2376ce;
     --background-color: #f4f4f4;
     --text-color: #3a3838;
     --border-radius: 12px;
@@ -31,7 +31,7 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     padding: 30px;
     width: 100%;
-    max-width: 800px;
+    max-width: 860px;
     transition: all var(--transition-speed) ease;
 }
 
